@@ -1,0 +1,9 @@
+{
+  "name": "ts-practice",
+  "version": "1.0.0",
+  "description": "Typescript study ",
+  "main": "index.js",
+  "repository": "https://github.com/joyan828",
+  "author": "joy an",
+  "license": "MIT"
+}
