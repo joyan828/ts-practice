@@ -1,9 +1,9 @@
 import React, { useReducer } from 'react';
 
-type InitialTodos = {
-    id: number,
-    text: string,
-    done: boolean 
+type TodoTypes = {
+    id: number;
+    text: string;
+    done: boolean;
 }
 
 const initialTodos = [
@@ -29,47 +29,61 @@ const initialTodos = [
     },
 ]
 
-// action types 
+const CREATE = 'todo/CREATE';
+const TOGGLE = 'todo/TOGGLE';
+const REMOVE = 'todo/REMOVE';
 
-const CREATE = 'CREATE';
-const TOGGLE = 'TOGGLE';
-const REMOVE = 'REMOVE';
+// actions types
+interface CreateAction {
+    type: typeof CREATE;
+    todo: TodoTypes
+}
+
+interface ToggleAction {
+    type: typeof TOGGLE;
+    id: number
+}
+
+interface RemoveAction {
+    type: typeof REMOVE;
+    id: number
+}
 
 // actions creators
-export const create = (todo: InitialTodos) => ({
+export const create = (todo: TodoTypes): CreateAction => ({
     type: CREATE,
     todo
 }); 
 
-export const toggle = (todo: InitialTodos) => ({
+export const toggle = (id: number): ToggleAction => ({
     type: TOGGLE,
-    todo
+    id
 }); 
 
-export const remove = (todo: InitialTodos) => ({
+export const remove = (id: number): RemoveAction => ({
     type: REMOVE,
-    todo
+    id
 }); 
 
 type TodoAction = 
-    | ReturnType<typeof create> 
-    | ReturnType<typeof toggle> 
-    | ReturnType<typeof remove> 
+    | CreateAction 
+    | ToggleAction 
+    | RemoveAction; 
     
-type TodoState = {
-    state : InitialTodos[]
-}
+type TodoState =  Readonly<TodoTypes[]>;
 
-const initialState: TodoState = {
-    state: []
-}
+const initialState: TodoState = [];
 
-function todoReducer(state: TodoState = initialState, action: TodoAction){
+// reducer 
+function todoReducer(
+    state: TodoState = initialState, 
+    action: TodoAction
+): TodoState {
     switch ( action.type ) {
-        case 'CREATE' :
+        case CREATE :
             return state.concat(action.todo);
-        case 'TOGGLE' : 
-            return state.map((todo: InitialTodos) => 
+        case TOGGLE : 
+            return state.map((todo: TodoTypes) => 
                 todo.id === action.id 
                 ? {
                     ...todo, 
@@ -77,16 +91,16 @@ function todoReducer(state: TodoState = initialState, action: TodoAction){
                 } 
                 : todo
             );
-        case 'REMOVE' :
-            return state.filter((todo: InitialTodos) => 
+        case REMOVE :
+            return state.filter((todo: TodoTypes) => 
                 todo.id !== action.id
             );
         default : 
-            throw new Error(`Unhandled action type: ${action.type}`);
+            throw new Error(`Unhandled action type: ${ action }`);
     }
 }
 
-export function TodoProvider({ children }) {
-    const [ state, dispatch ] = useReducer(todoReducer, initialTodos)
-    return children;
-}
+// export function TodoProvider({ children }) {
+//     const [ state, dispatch ] = useReducer(todoReducer, initialTodos)
+//     return children;
+// }
