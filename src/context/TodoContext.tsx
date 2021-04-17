@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, createContext, Dispatch } from 'react';
 
 type TodoTypes = {
     id: number;
@@ -27,7 +27,9 @@ const initialTodos = [
         text: '기능 구현하기',
         done: false
     },
-]
+];
+
+
 
 const CREATE = 'todo/CREATE';
 const TOGGLE = 'todo/TOGGLE';
@@ -100,7 +102,18 @@ function todoReducer(
     }
 }
 
-// export function TodoProvider({ children }) {
-//     const [ state, dispatch ] = useReducer(todoReducer, initialTodos)
-//     return children;
-// }
+type TodoDispatch = Dispatch<TodoAction>
+
+const TodoStateContext = createContext<TodoState | null>(null);
+const TodoDispatchContext = createContext<TodoDispatch | null>(null)
+
+export function TodoProvider({ children }: any) {
+    const [ state, dispatch ] = useReducer(todoReducer, initialTodos)
+    return (
+        <TodoStateContext.Provider value={state}>
+            <TodoDispatchContext.Provider value={dispatch}>
+                {children}
+            </TodoDispatchContext.Provider>
+        </TodoStateContext.Provider>
+    )
+}
