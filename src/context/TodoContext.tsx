@@ -1,4 +1,10 @@
-import React, { useReducer, createContext, Dispatch } from 'react';
+import React, { 
+    useReducer, 
+    createContext, 
+    Dispatch, 
+    useContext,
+    useRef, 
+} from 'react';
 
 type TodoTypes = {
     id: number;
@@ -105,15 +111,32 @@ function todoReducer(
 type TodoDispatch = Dispatch<TodoAction>
 
 const TodoStateContext = createContext<TodoState | null>(null);
-const TodoDispatchContext = createContext<TodoDispatch | null>(null)
+const TodoDispatchContext = createContext<TodoDispatch | null>(null);
+const TodoNextIdContext = createContext<React.MutableRefObject<number>| null>(null);
 
 export function TodoProvider({ children }: any) {
-    const [ state, dispatch ] = useReducer(todoReducer, initialTodos)
+    const [ state, dispatch ] = useReducer(todoReducer, initialTodos);
+    const nextId = useRef<number>(5);
+
     return (
         <TodoStateContext.Provider value={state}>
             <TodoDispatchContext.Provider value={dispatch}>
-                {children}
+                <TodoNextIdContext.Provider value={nextId}>
+                    {children}
+                </TodoNextIdContext.Provider>
             </TodoDispatchContext.Provider>
         </TodoStateContext.Provider>
     )
+}
+
+export function useTodoState() {
+    return useContext(TodoStateContext);
+}
+  
+export function useTodoDispatch() {
+    return useContext(TodoDispatchContext);
+}
+
+export function useTodoNextId() {
+    return useContext(TodoNextIdContext);
 }
