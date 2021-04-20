@@ -1,9 +1,10 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { MdDone, MdDelete } from 'react-icons/md';
+import { useTodoDispatch, toggle, remove } from '../context/TodoContext';
 
 interface TodoItemProps {
-    id?: string,
+    id: number,
     done: boolean,
     text: string
 }
@@ -65,15 +66,26 @@ const Text = styled.div<{done: boolean}>`
 
 
 function TodoItem({ id, done, text }: TodoItemProps) {
+    const dispatch = useTodoDispatch();
+    const onToggle = () => dispatch(toggle(id));
+    const onRemove = () => dispatch(remove(id));
+
     return (
         <TodoItemBlock>
-            <CheckCircle done={done}>{done && <MdDone />}</CheckCircle>
+            <CheckCircle 
+                done={done}
+                onClick={onToggle}
+            > 
+                {done && <MdDone />}
+            </CheckCircle>
             <Text done={done}>{text}</Text>
-            <Remove>
+            <Remove
+                onClick={onRemove}
+            >
                 <MdDelete />
             </Remove>
         </TodoItemBlock>
     );
 }
 
-export default TodoItem;
+export default React.memo(TodoItem); //불필요한 리렌더링 방지 
