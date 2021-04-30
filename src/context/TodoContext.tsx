@@ -37,9 +37,9 @@ const initialTodos = [
 
 
 
-const CREATE = 'todo/CREATE';
-const TOGGLE = 'todo/TOGGLE';
-const REMOVE = 'todo/REMOVE';
+export const CREATE = 'todo/CREATE';
+export const TOGGLE = 'todo/TOGGLE';
+export const REMOVE = 'todo/REMOVE';
 
 // actions types
 interface CreateAction {
